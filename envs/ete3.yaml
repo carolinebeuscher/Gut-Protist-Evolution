@@ -1,0 +1,11 @@
+# Used by: get_taxonomy, run_alien
+name: ete3
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - ete3
+  - six
+  - numpy

@@ -1,0 +1,10 @@
+# Used by: gene_prediction (reduce_metaeuk_faa_name.py post-processing)
+name: biopython
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - biopython
+  - seqkit

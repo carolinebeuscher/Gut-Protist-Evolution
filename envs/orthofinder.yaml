@@ -1,0 +1,8 @@
+# Used by: run_orthofinder
+name: orthofinder
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - orthofinder

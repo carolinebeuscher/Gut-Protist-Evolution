@@ -1,0 +1,10 @@
+# Used by: pathway_summary_stats, module_stats, interpro_sum_stats,
+#          orthogroup_stats
+name: scipy
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - scipy
+  - pandas

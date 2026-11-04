@@ -1,0 +1,181 @@
+# ---------------------------------------------------------------------------
+# profiles/slurm/config.yaml
+#
+# Snakemake SLURM profile using the official executor plugin.
+#
+# Install the plugin once:
+#   pip install snakemake-executor-plugin-slurm
+#
+# Activate with:
+#   snakemake -s Snakefile.smk --profile profiles/slurm
+# ---------------------------------------------------------------------------
+
+executor: slurm
+use-conda: true
+jobs: 50
+latency-wait: 600
+retries: 3
+printshellcmds: true
+keep-going: true
+
+# ---------------------------------------------------------------------------
+# Default resources — applied to every rule not listed in set-resources below
+# Runtime in minutes
+# ---------------------------------------------------------------------------
+default-resources:
+  slurm_account: "gts-alind6-postpaid"
+  slurm_partition: "inferno"
+  mem_mb: 16000
+  runtime: 720
+  tasks: 1
+  cpus_per_task: 4
+
+# ---------------------------------------------------------------------------
+# Per-rule resource overrides
+# ---------------------------------------------------------------------------
+set-resources:
+
+  gene_prediction:
+    mem_mb: 64000
+    runtime: 4800
+    cpus_per_task: 4
+
+  proteome_completeness:
+    mem_mb: 32000
+    runtime: 360
+    cpus_per_task: 4
+
+  filter_proteomes:
+    mem_mb: 8000
+    runtime: 60
+    cpus_per_task: 1
+
+  get_taxonomy:
+    mem_mb: 4000
+    runtime: 120
+    cpus_per_task: 1
+
+  add_clustering:
+    mem_mb: 4000
+    runtime: 30
+    cpus_per_task: 1
+
+  run_kofamscan:
+    mem_mb: 32000
+    runtime: 2880
+    cpus_per_task: 8
+
+  summarize_kofamscan:
+    mem_mb: 8000
+    runtime: 120
+    cpus_per_task: 1
+
+  pathway_summary_stats:
+    mem_mb: 16000
+    runtime: 120
+    cpus_per_task: 2
+
+  pull_kofam_pathways:
+    mem_mb: 4000
+    runtime: 30
+    cpus_per_task: 1
+
+  assess_modules:
+    mem_mb: 16000
+    runtime: 360
+    cpus_per_task: 1
+
+  module_stats:
+    mem_mb: 8000
+    runtime: 120
+    cpus_per_task: 1
+
+  run_interproscan:
+    mem_mb: 32000
+    runtime: 2880
+    cpus_per_task: 8
+
+  clean_interproscan:
+    mem_mb: 8000
+    runtime: 60
+    cpus_per_task: 1
+
+  summarize_interproscan:
+    mem_mb: 16000
+    runtime: 120
+    cpus_per_task: 1
+
+  interpro_sum_stats:
+    mem_mb: 8000
+    runtime: 60
+    cpus_per_task: 1
+
+  merge_interpro_stats:
+    mem_mb: 8000
+    runtime: 60
+    cpus_per_task: 1
+
+  run_dbcan:
+    mem_mb: 32000
+    runtime: 720
+    cpus_per_task: 4
+
+  clean_dbcan:
+    mem_mb: 8000
+    runtime: 60
+    cpus_per_task: 1
+
+  summarize_dbcan:
+    mem_mb: 8000
+    runtime: 60
+    cpus_per_task: 1
+
+  dbcan_stats:
+    mem_mb: 8000
+    runtime: 60
+    cpus_per_task: 1
+
+  merge_dbcan_stats:
+    mem_mb: 8000
+    runtime: 60
+    cpus_per_task: 1
+
+  run_orthofinder:
+    mem_mb: 128000
+    runtime: 4320
+    cpus_per_task: 24
+
+  orthogroup_stats:
+    mem_mb: 16000
+    runtime: 120
+    cpus_per_task: 1
+
+  annotate_sig_orthogroups:
+    mem_mb: 8000
+    runtime: 60
+    cpus_per_task: 1
+
+  run_diamond:
+    mem_mb: 64000
+    runtime: 720
+    cpus_per_task: 8
+
+  run_alien:
+    mem_mb: 16000
+    runtime: 720
+    cpus_per_task: 2
+
+  alien_add_annotations:
+    mem_mb: 8000
+    runtime: 120
+    cpus_per_task: 1
+
+  summarize_alien:
+    mem_mb: 8000
+    runtime: 120
+    cpus_per_task: 1
+
+  filter_alien_tsv:
+    mem_mb: 8000
+    runtime: 60
+    cpus_per_task: 1

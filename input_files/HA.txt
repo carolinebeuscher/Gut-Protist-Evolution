@@ -1,0 +1,53 @@
+Blastocystis sp. Blastoise
+Blastocystis sp. BT1
+Blastocystis sp. DL
+Blastocystis sp. JDR
+Blastocystis sp. Nand
+Blastocystis sp. NMH
+Blattamonas nauphoetae
+Cryptosporidium parvum
+Cyclospora cayetanensis
+Cystoisospora suis
+Dasytricha ruminantium
+Diplodinium dentatum
+Dientamoeba fragilis
+Diplodinium flabellum
+Eimeria stiedai 
+Entodinium bursa
+Entodinium caudatum
+Entamoeba dispar
+Entamoeba histolytica
+Entamoeba invadens
+Entodinium longinucleatum
+Entamoeba marina
+Entamoeba nuttalli
+Enoploplastron triloricatum
+Epidinium cattanei
+Epidinium caudatum
+Giardia intestinalis
+Giardia muris
+Histomonas meleagridis
+Isotricha intestinalis
+Isotricha prostoma
+Isotricha sp. YL-2021a
+Isotricha sp. YL-2021b
+Monocercomonas colubrorum
+Metadinium minorum
+Monocercomonoides exilis
+Ophryoscolex caudatus
+Ostracodinium dentatum
+Ostracodinium gracile
+Pentatrichomonas hominis
+Proteromonas lacertae
+Plasmodium falciparum
+Polyplastron multivesiculatum
+Spironucleus salmonicida
+Streblomastix strix
+Trichomitus batrachorum
+Tritrichomonas casperi
+Tritrichomonas foetus
+Trichomonas gallinae
+Tritrichomonas musculus
+Toxoplasma gondii
+Trichomonas tenax
+Trichomonas vaginalis

@@ -1,0 +1,13 @@
+# Used by: run_alien
+# AlienIndex requires ete3 for taxonomy lookups and diamond for BLAST
+name: alien
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - ete3
+  - six
+  - numpy
+  - diamond

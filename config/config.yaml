@@ -1,0 +1,205 @@
+# config/config.yaml
+# Configuration for the gut protist convergent evolution workflow
+
+#############################################
+##### STEP 1: CONFIGURE TO YOUR PATH ########
+#############################################
+# Change only the two lines below. All other paths are built from them.
+#
+#   root:       your home/project root (everything under ~/shared lives here)
+#   project:    path to the snakemake project directory from root
+#
+# Example:
+#   cbeuscher3: root: "/storage/home/hcoda1/5/cbeuscher3"
+#############################################
+root:    "/storage/home/hcoda1/5/cbeuscher3"   # change when switching users
+project: "shared/data_swap_tmp/caroline/snakemake"  # relative to root
+
+###########################
+###### GIVEN FASTAS #######
+###########################
+genome_dir:  "{root}/{project}/fastas/fna"    # directory containing *.fna files
+protein_dir: "{root}/{project}/fastas/faa"    # directory containing *.faa files
+outdir:      "{root}/{project}/outdir"
+
+###########################
+##### GENE PREDICTION #####
+###########################
+gp_outdir:         "{root}/{project}/outdir/gene_prediction"
+braker_protein_db: "{root}/shared/gene_dbs/mmseqs/swissprot_and_microeuks/sprot_unimeuk_ncmeuk.fasta"   # braker reference protein database
+meta_protein_db:   "{root}/shared/gene_dbs/mmseqs/swissprot_and_microeuks/sprot_unimeuk_ncmeuk"         # metaeuk reference protein database
+
+# Container images
+braker_sif:  "{root}/shared/containers/BRAKER3_Sandbox"
+metaeuk_sif: "{root}/shared/containers/metaeuk.sif"
+
+## BRAKER options ##
+min_contig: 10000   # ignore contigs shorter than this (bp)
+species: "tetrahymena"  #optional
+
+###########################
+##### COMPLETENESS ########
+###########################
+filtered_faa_dir: "{root}/{project}/filtered_faa"
+min_seq_len: 50
+
+busco_outdir:  "{root}/{project}/outdir/data_cleaning/busco"
+busco_lineage: "{root}/{project}/outdir/data_cleaning/busco/eukaryota_odb12"
+busco_sif:     "{root}/shared/containers/busco6.sif"
+busco_bind:    "{root}/shared"    # bind-mounted into the container
+busco_min_complete: 10
+    # Absolute floor (%_complete): always removed regardless of the IQR fence.
+    # Catches catastrophic failures (e.g. near-empty proteomes) that a purely
+    # relative outlier test can miss once the batch includes genome types with
+    # a wide, legitimately-lower expected completeness range (MAGs/SAGs).
+    # A sample is removed if it's below EITHER this floor OR the dynamic
+    # Tukey fence (Q1 - 1.5*IQR) computed from the batch.
+
+
+###########################
+####### CLUSTERING ########
+###########################
+cluster_outdir:        "{root}/{project}/outdir/data_clustering"
+provided_grouping_key: "{root}/{project}/input_files/grouping_key.tsv"    # e.g. "path/to/my_existing_grouping_key.tsv"
+
+# Only required when provided_grouping_key is empty:
+species_list: "{root}/{project}/input_files/species_list.txt"
+HA_list:      "{root}/{project}/input_files/HA.txt"
+aerobic_list: "{root}/{project}/input_files/aerobic.txt"
+sample_key:   "{root}/{project}/input_files/sample_key.tsv"
+
+
+###########################
+##### GENE ANNOTATION #####
+###########################
+
+###KOFAM###
+kofam_outdir:               "{root}/{project}/outdir/gene_annotation/kofam"
+kegg_pathway_ids:           "{root}/{project}/input_files/kegg_pathways.txt"
+kegg_orth_and_pathway_corr: "{root}/{project}/input_files/kegg_orthology_pathways.txt"
+kofam_sif:      "{root}/shared/containers/kofamscan.sif"
+kofam_profiles: "{root}/shared/gene_dbs/kofam/profiles"
+kofam_list:     "{root}/shared/gene_dbs/kofam/ko_list"
+
+
+###KEGG MODULES###
+kegg_outdir:       "{root}/{project}/outdir/gene_annotation/kofam/kegg_modules"
+pathway_hierarchy: "{root}/{project}/input_files/pathway_hierarchy.tsv"   # Pathway col must be in ko00010 format
+pathway_module_ko: "{root}/{project}/input_files/pathway_module_ko.tsv"   # built by build_kegg_pathway_table.py
+forced_pathways:   ""   
+    # optional: "{root}/{project}/input_files/my_pathways.txt"
+    # opt:  pathway IDs to always include in key_pathways.tsv regardless of significance. 
+    # One ID per line in ko00010 format. Leave empty ("") to skip.
+modules_to_pathways: "{root}/{project}/input_files/kegg_orthology_pathways.txt"
+
+stats_alpha:    0.05      # significance cutoff — lower = stricter (e.g. 0.01, 0.001)
+top_kos:        5         # number of top missing KOs to report per dysfunctional group
+grouping_cols:            # columns to test; any column present in functionality TSVs is valid
+  - host_association
+  - aerotolerance
+  - phylum
+  - class
+  - order
+  - family
+  - clade_1
+  - clade_2
+
+
+###INTERPROSCAN###
+interproscan_outdir: "{root}/{project}/outdir/gene_annotation/interproscan"
+interpro:            "{root}/shared/apps/interproscan-5.66-98.0/interproscan.sh"    # where you have interproscan stored
+ipr_entry_list:      "{root}/{project}/input_files/entry.list"                      # IPR entry list: col1=IPR ID, col3=domain name
+ipr_compare_list:    "{root}/{project}/input_files/domain_ids.txt"
+    # IPR IDs to include in the merged table (one per line)
+    # domain_ids contains all interpro domains but can make your own with less
+
+
+# Each entry maps a group value to the column it lives in.
+# group : value to match in the grouping key
+# col   : which column to look it up in (e.g. phylum, class, clade)
+interpro_groups:
+  - { group: "Metamonada",    col: "clade_1" }
+  - { group: "Amoebozoa",     col: "clade_1" }
+  - { group: "Apicomplexa",   col: "phylum" }
+  - { group: "Ciliophora",    col: "phylum" }
+  - { group: "Stramenopiles", col: "clade_2" }
+interpro_compare_col: "host_association"              # column with two labels to compare (e.g. HA vs FL)
+interpro_stat_type:   "mannwhitney"                   # which stat TSVs to merge: "mannwhitney" or "ttest"
+
+
+###DBCAN###
+dbcan_outdir: "{root}/{project}/outdir/gene_annotation/dbcan"
+dbcan_sif:    "{root}/shared/containers/dbcan.sif"
+dbcan_bind:   "{root}/shared"        # bind-mounted into the container
+dbcan_db:     "{root}/shared/apps/dbcan_db/"
+dbcan_cazyme_list: ""
+    # Optional: CAZyme family IDs to include in merged table (one per line).
+    # Leave empty ("") to include all families found in any lineage TSV.
+    # e.g. "{root}/{project}/input_files/cazyme_ids.txt"
+
+# Each entry maps a group value to the column it lives in.
+# group : value to match in the grouping key
+# col   : which column to look it up in (e.g. phylum, class, clade)
+dbcan_groups:
+  - { group: "Metamonada",    col: "clade_1" }
+  - { group: "Amoebozoa",     col: "clade_1" }
+  - { group: "Apicomplexa",   col: "phylum" }
+  - { group: "Ciliophora",    col: "phylum" }
+  - { group: "Stramenopiles", col: "clade_2" }
+dbcan_compare_col: "host_association"       # column with two labels to compare
+dbcan_metric:      "pct_genes"              # pct_genes or pct_occurrences
+
+
+################################
+##### COMPARATIVE GENOMICS #####
+################################
+
+###ORTHOFINDER###
+### ORTHOFINDER ###
+orthofinder_outdir: "{root}/{project}/outdir/comparative_genomics/orthofinder"
+ortho_min_samples:  2     # min samples per group to run a test
+ortho_min_nonzero:  2     # min samples with count > 0 to include an orthogroup; use 1 to be less stringent
+genes_of_interest:  ""
+    # Optional: leave empty ("") to skip gene-of-interest analysis
+    # path to text file with gene IDs of interest (one per line)
+domain_significant_genes_outfile: "{root}/{project}/outdir/comparative_genomics/orthofinder/domain_significant_genes.txt"
+    # Optional: leave empty ("") to skip. If set, runs extract_domain_genes
+    # before orthogroup_stats to build a second gene-of-interest list from
+    # genes carrying InterPro domains significant in merge_interpro_stats'
+    # output (all_lineages_{mannwhitney,ttest}.tsv). Combines with
+    # genes_of_interest above — both are passed to orthogroup_stats.py.
+    # e.g. "{root}/{project}/outdir/comparative_genomics/orthofinder/domain_significant_genes.txt"
+domain_significant_in: "any"
+    # "any" (default): a domain counts if significant in at least one lineage
+    # "all": must be significant in every lineage
+
+orthofinder_mode: "add"          # fresh | add
+orthofinder_prev_results: "{root}/{project}/outdir/comparative_genomics/orthofinder/Results_here"       
+                                   # only needed for "add" mode; path to the
+                                   # Results_* dir inside a previous run, e.g.:
+                                   # outdir/comparative_genomics/orthofinder/Results_here
+
+###DIAMOND###
+diamond_outdir: "{root}/{project}/outdir/comparative_genomics/alien/diamond"
+diamond_db:     "{root}/shared/gene_dbs/blastdb/dl_2026_03_04/nr_cluster_seq_diamonddb.dmnd"
+tmp_dir:        "{root}/scratch/diamond_tmp"
+
+
+###ALIEN###
+alien_outdir:          "{root}/{project}/outdir/comparative_genomics/alien/alien_out"
+alien_script:          "{root}/{project}/scripts/comp_genomics/alien/alien_index_multiskip.py"
+recipient:             2759                                     # recipient ID; 2759 for eukaryotes
+skip_lineages:         "5741,42740,163343,555406,2611341,5794"  # skipped lineages
+#sqlite_taxa:           "{root}/.etetoolkit/taxa.sqlite"         # where sqlite taxa db is located
+### THIS POINTS TO AN OUTDATED VERSION OF SQLITE TAXA ### 
+sqlite_taxa:           "/storage/home/hcoda1/5/cbeuscher3/.etetoolkit/taxa.sqlite"
+### WILL NEED TO DOWNLOAD AN UPDATED VERSION OF THE DB YOU CAN ACCESS ### 
+
+
+#stats table
+alien_ingroup_col:     "order"                                  # column in grouping_key.tsv to use as --ingroup (e.g. order, phylum, class)
+alien_threshold:       0.2                                      # alien_score cutoff
+alien_ingroup_species: ""
+    # optional: extra species to treat as ingroup
+    # regardless of class, comma-separated
+    # e.g. "Blastocystis hominis,Blastocystis sp. NMH"

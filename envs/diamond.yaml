@@ -1,0 +1,8 @@
+# Used by: run_diamond
+name: diamond
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - diamond

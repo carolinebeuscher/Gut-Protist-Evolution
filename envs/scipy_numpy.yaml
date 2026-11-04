@@ -1,0 +1,10 @@
+# Used by: dbcan_stats
+name: scipy_numpy
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - scipy
+  - numpy
+  - pandas

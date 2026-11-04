@@ -1,0 +1,22 @@
+# Used by: run_interproscan
+#
+# InterProScan itself is NOT installed here — the workflow calls existing
+# install via config.
+# This env only provides the runtime that install needs:
+#   - openjdk 11  : InterProScan 5.66-98.0 requires Java 11 (not 8, not 17+)
+#   - perl        : a complete Perl 5 for the member-DB helper scripts
+#   - perl-findbin: the module whose absence caused
+#                   "Can't locate FindBin.pm" in bin/pirsf/3.10/pirsf.pl
+#
+# If InterProScan later reports another "Can't locate <X>.pm", add the matching
+# perl-<x> package here (e.g. perl-lib, perl-cwd, perl-data-dumper).
+name: interproscan
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - openjdk=11
+  - perl>=5.26
+  - perl-findbin
+  - python=3.10
