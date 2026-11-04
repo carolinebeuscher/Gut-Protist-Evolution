@@ -3,7 +3,9 @@
 Snakemake pipeline for comparative genomic analysis of host-associated protists. Starting from genome assemblies (`.fna`) and/or pre-existing proteomes (`.faa`), the workflow performs gene prediction, quality filtering, functional annotation, statistical clustering, and evolutionary analysis to identify convergent gene families and pathways associated with host-association and aerotolerance.
 
 ---
+NOTE: this is still an ongoing project. This does not represent the finished pipeline. 
 
+---
 ## Table of Contents
 
 1. [Requirements](#requirements)
